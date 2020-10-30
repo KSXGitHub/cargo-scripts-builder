@@ -1,4 +1,4 @@
-# AUR Packages Builder
+# Cargo Scripts Builder
 
 [![.github/workflows/build.yaml](https://github.com/KSXGitHub/cargo-scripts-builder/workflows/.github/workflows/build.yaml/badge.svg)](https://github.com/KSXGitHub/cargo-scripts-builder/actions)
 
