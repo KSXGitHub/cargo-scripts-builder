@@ -1,0 +1,82 @@
+on:
+  workflow_dispatch: {}
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: '0 0 * * *' # 0 AM everyday
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache Deno
+        uses: actions/cache@v2.1.2
+        with:
+          path: ~/.cache/deno
+          key: deno
+
+      - name: Install Deno
+        uses: denolib/setup-deno@v2.2.0
+        with:
+          deno-version: 1.5.0
+
+      - name: Generate build directories
+        run: deno run --unstable --allow-all generate.ts
+
+      - name: Clone target repository
+        run: git clone https://github.com/KSXGitHub/pacman-repo.git pacman-repo
+
+      - name: Inspect restored failed build record
+        continue-on-error: true
+        run: cat pacman-repo/failed-build-records/cargo-scripts-builder.yaml
+
+      - name: Generate manifest file
+        uses: pacman-repo-builder/action@0.0.0-rc.37
+        with:
+          command: |
+            args=(
+              --repository pacman-repo/repo/khai.db.tar.gz
+              --container build
+              --with-record-failed-builds pacman-repo/failed-build-records/cargo-scripts-builder.yaml
+              --with-install-missing-dependencies true
+              --with-dereference-database-symlinks true
+              --with-allow-failure true
+              --with-clean-after-build true
+              --with-arch-filter x86_64
+              --with-packager 'Hoàng Văn Khải <hvksmr1996@gmail.com>'
+            )
+            build-pacman-repo print-config "${args[@]}" | tee build-pacman-repo.yaml
+
+      - name: Build pacman packages
+        uses: pacman-repo-builder/action@0.0.0-rc.37
+        with:
+          command: build-pacman-repo build
+
+      - name: Inspect changed failed build record
+        continue-on-error: true
+        run: cat pacman-repo/failed-build-records/cargo-scripts-builder.yaml
+
+      - name: Upload packages
+        env:
+          COMMIT_AUTHOR_NAME: ${{ secrets.COMMIT_AUTHOR_NAME }}
+          COMMIT_AUTHOR_EMAIL: ${{ secrets.COMMIT_AUTHOR_EMAIL }}
+          AUTH_USERNAME: KSXGitHub
+          AUTH_PASSWORD: ${{ secrets.AUTH_PASSWORD }}
+        run: |
+          cd pacman-repo
+          git config user.name "$COMMIT_AUTHOR_NAME"
+          git config user.email "$COMMIT_AUTHOR_EMAIL"
+          git add -v .
+          git commit -m "Update by $GITHUB_REPOSITORY@$GITHUB_SHA" --allow-empty
+          echo "username=$AUTH_USERNAME" >> /tmp/git-login.txt
+          echo "password=$AUTH_PASSWORD" >> /tmp/git-login.txt
+          echo '#! /bin/bash' >> /tmp/credential-helper
+          echo 'cat /tmp/git-login.txt' >> /tmp/credential-helper
+          chmod +x /tmp/credential-helper
+          git config credential.helper '/tmp/credential-helper'
+          git pull origin master --rebase=true # to avoid conflicts due to data races
+          git push origin master
