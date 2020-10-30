@@ -7,7 +7,7 @@ cargo-edit:
 cargo-insta: ~
 cargo-script:
   - cargo-script
-  - cargo-run-script
+  - run-cargo-script
 cargo-update:
   - cargo-install-update
   - cargo-install-update-config
