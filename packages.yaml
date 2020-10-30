@@ -21,4 +21,5 @@ evcxr_jupyter: ~
 evcxr_repl:
   - evcxr
 mdcat: ~
+rustsym: ~
 wasm-pack: ~
