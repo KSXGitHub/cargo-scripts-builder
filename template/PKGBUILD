@@ -1,6 +1,7 @@
 # Maintainer: Hoàng Văn Khải <hvksmr1996@gmail.com>
 
-pkgname=CRATE
+_crate=CRATE
+pkgname="rust-$_crate"
 pkgver=VERSION
 pkgrel='1'
 arch=('x86_64')
@@ -13,7 +14,7 @@ build() {
     --all-features --force \
     --root "$srcdir" \
     --version "$pkgver" \
-    "$pkgname"
+    "$_crate"
 }
 
 package() {
