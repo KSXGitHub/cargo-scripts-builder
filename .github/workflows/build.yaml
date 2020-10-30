@@ -4,7 +4,7 @@ on:
     branches:
       - master
   schedule:
-    - cron: '0 0 * * *' # 0 AM everyday
+    - cron: '0 3 * * *' # 3 AM everyday
 
 jobs:
   build:
