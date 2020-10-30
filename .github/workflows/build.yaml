@@ -20,7 +20,7 @@ jobs:
           key: deno
 
       - name: Install Deno
-        uses: denolib/setup-deno@v2.2.0
+        uses: denolib/setup-deno@v2.3.0
         with:
           deno-version: 1.5.0
 
