@@ -1,0 +1,24 @@
+---
+cargo-cache: ~
+cargo-edit:
+  - cargo-add
+  - cargo-rm
+  - cargo-upgrade
+cargo-insta: ~
+cargo-script:
+  - cargo-script
+  - cargo-run-script
+cargo-update:
+  - cargo-install-update
+  - cargo-install-update-config
+cargo-watch: ~
+cargo-web: ~
+cargo-x:
+  - cargo-x
+  - x
+eva: ~
+evcxr_jupyter: ~
+evcxr_repl:
+  - evcxr
+mdcat: ~
+wasm-pack: ~

@@ -1,0 +1,23 @@
+# Maintainer: Hoàng Văn Khải <hvksmr1996@gmail.com>
+
+pkgname=CRATE
+pkgver=VERSION
+pkgrel='1'
+license=('custom')
+makedepends=('rustup')
+_binaries=(BINARIES)
+
+build() {
+  cargo +nightly install \
+    --all-features --force \
+    --root "$srcdir" \
+    --version "$pkgver" \
+    "$pkgname"
+}
+
+package() {
+  for binary_name in "${_binaries[@]}"; do
+    msg2 "$binary_name"
+    install -Dm755 "$srcdir/bin/$binary_name" "$pkgdir/usr/bin/$binary_name"
+  done
+}
