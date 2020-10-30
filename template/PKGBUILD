@@ -6,7 +6,7 @@ pkgver=VERSION
 pkgrel='1'
 arch=('x86_64')
 license=('custom')
-makedepends=('rustup')
+makedepends=('rustup' 'gcc' 'llvm')
 _binaries=(BINARIES)
 
 build() {
