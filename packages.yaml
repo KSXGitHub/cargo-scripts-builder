@@ -21,7 +21,6 @@ evcxr_jupyter: ~
 evcxr_repl:
   - evcxr
 mdcat: ~
-rustsym: ~
 wasm-bindgen-cli:
   - wasm-bindgen
   - wasm-bindgen-test-runner
