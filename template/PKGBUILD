@@ -11,7 +11,8 @@ _binaries=(BINARIES)
 
 build() {
   cargo +nightly install \
-    --all-features --force \
+    --all-features \
+    --force \
     --root "$srcdir" \
     --version "$pkgver" \
     --locked \
