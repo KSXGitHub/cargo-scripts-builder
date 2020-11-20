@@ -5,6 +5,7 @@ cargo-edit:
   - cargo-add
   - cargo-rm
   - cargo-upgrade
+cargo-expand: ~
 cargo-insta: ~
 cargo-script:
   - cargo-script
