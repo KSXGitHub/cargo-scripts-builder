@@ -7,6 +7,9 @@ cargo-edit:
   - cargo-upgrade
 cargo-expand: ~
 cargo-insta: ~
+cargo-make:
+  - cargo-make
+  - makers
 cargo-script:
   - cargo-script
   - run-cargo-script
