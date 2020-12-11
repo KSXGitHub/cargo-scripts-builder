@@ -2,6 +2,7 @@ import * as yaml from 'https://deno.land/std@0.75.0/encoding/yaml.ts'
 import * as fs from 'https://deno.land/std@0.75.0/fs/mod.ts'
 import * as path from 'https://deno.land/std@0.75.0/path/mod.ts'
 import { pipe } from 'https://deno.land/x/compose@1.3.2/index.js'
+import shellEscape from 'https://deno.land/x/shell_escape@1.0.0/single-argument.ts'
 
 interface Payload {
   readonly crate: Payload.Crate
@@ -55,6 +56,28 @@ class Package {
   public async latestVersion(): Promise<string> {
     return (await this.load()).crate.max_version
   }
+
+  public async license(): Promise<string> {
+    const latestVersion = await this.latestVersion()
+    return (await this.load())
+      .versions
+      .find(x => x.num === latestVersion)!
+      .license
+  }
+
+  public async latestInfo() {
+    const { crate } = await this.load()
+    const { description, homepage, repository, documentation } = crate
+    return {
+      description,
+      homepage,
+      repository,
+      documentation,
+      url: homepage || repository || documentation || '',
+      version: await this.latestVersion(),
+      license: await this.license(),
+    } as const
+  }
 }
 
 type PackageDict = Record<string, readonly string[] | null>
@@ -94,11 +117,15 @@ const packages = await pipe(
   x => Promise.all(x),
 )
 
-async function createBuildDirectory(pkg: Package, version: string) {
+async function createBuildDirectory(pkg: Package) {
+  const { description, url, license, version } = await pkg.latestInfo()
   const content = Deno.readTextFileSync(path.join(__dirname, 'template', 'PKGBUILD'))
-    .replaceAll('CRATE', pkg.crate)
-    .replaceAll('VERSION', version)
-    .replaceAll('BINARIES', pkg.binaries.join(' '))
+    .replaceAll('CRATE', shellEscape(pkg.crate))
+    .replaceAll('VERSION', shellEscape(version))
+    .replaceAll('BINARIES', pkg.binaries.map(shellEscape).join(' '))
+    .replaceAll('DESCRIPTION', shellEscape(description || ''))
+    .replaceAll('URL', shellEscape(url))
+    .replaceAll('LICENSE', shellEscape(license))
   const buildDirectory = path.join(__dirname, 'build', pkg.crate)
   if (!fs.existsSync(buildDirectory)) {
     Deno.mkdirSync(buildDirectory)
@@ -109,5 +136,5 @@ async function createBuildDirectory(pkg: Package, version: string) {
 for (const pkg of packages) {
   const latestVersion = await pkg.latestVersion()
   console.info('📦', pkg.crate, latestVersion)
-  createBuildDirectory(pkg, latestVersion)
+  createBuildDirectory(pkg)
 }

@@ -3,9 +3,11 @@
 _crate=CRATE
 pkgname="rust-$_crate"
 pkgver=VERSION
+pkgdesc=DESCRIPTION
+url=URL
 pkgrel='1'
 arch=('x86_64')
-license=('custom')
+license=(LICENSE)
 makedepends=('rustup' 'gcc' 'llvm')
 _binaries=(BINARIES)
 
