@@ -3,12 +3,12 @@ import * as fs from 'https://deno.land/std@0.75.0/fs/mod.ts'
 import * as path from 'https://deno.land/std@0.75.0/path/mod.ts'
 import { pipe } from 'https://deno.land/x/compose@1.3.2/index.js'
 
-interface PackageIndexItem {
-  readonly crate: PackageIndexItem.Crate
-  readonly versions: readonly PackageIndexItem.Version[]
+interface Payload {
+  readonly crate: Payload.Crate
+  readonly versions: readonly Payload.Version[]
 }
 
-namespace PackageIndexItem {
+namespace Payload {
   export interface Crate {
     readonly max_version: string
     readonly description: string | null
@@ -24,7 +24,7 @@ namespace PackageIndexItem {
 }
 
 class Package {
-  #content?: PackageIndexItem
+  #content?: Payload
 
   constructor(
     public readonly crate: string,
@@ -35,7 +35,7 @@ class Package {
     return `https://crates.io/api/v1/crates/${this.crate}`
   }
 
-  public async loadIndexJson(): Promise<PackageIndexItem> {
+  public async load(): Promise<Payload> {
     if (this.#content) {
       return this.#content
     }
@@ -53,7 +53,7 @@ class Package {
   }
 
   public async latestVersion(): Promise<string> {
-    return (await this.loadIndexJson()).crate.max_version
+    return (await this.load()).crate.max_version
   }
 }
 
@@ -88,7 +88,7 @@ const packages = await pipe(
   iter => [...iter],
   pkgs =>
     pkgs.map(async pkg => {
-      await pkg.loadIndexJson()
+      await pkg.load()
       return pkg
     }),
   x => Promise.all(x),
