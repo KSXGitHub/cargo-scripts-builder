@@ -1,10 +1,4 @@
 ---
-bottom: ~
-cargo-cache: ~
-cargo-edit:
-  - cargo-add
-  - cargo-rm
-  - cargo-upgrade
 cargo-expand: ~
 cargo-insta: ~
 cargo-make:
@@ -13,20 +7,11 @@ cargo-make:
 cargo-script:
   - cargo-script
   - run-cargo-script
-cargo-update:
-  - cargo-install-update
-  - cargo-install-update-config
-cargo-watch: ~
-cargo-web: ~
 cargo-x:
   - cargo-x
   - x
 eva: ~
-evcxr_jupyter: ~
-evcxr_repl:
-  - evcxr
 mdcat: ~
-mdbook: ~
 wasm-bindgen-cli:
   - wasm-bindgen
   - wasm-bindgen-test-runner
