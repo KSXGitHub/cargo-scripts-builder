@@ -1,59 +1,43 @@
-import * as path from 'https://deno.land/std@0.75.0/path/mod.ts'
-import * as fs from 'https://deno.land/std@0.75.0/fs/mod.ts'
 import * as yaml from 'https://deno.land/std@0.75.0/encoding/yaml.ts'
-import * as semver from 'https://deno.land/x/semver@v1.0.0/mod.ts'
+import * as fs from 'https://deno.land/std@0.75.0/fs/mod.ts'
+import * as path from 'https://deno.land/std@0.75.0/path/mod.ts'
 import { pipe } from 'https://deno.land/x/compose@1.3.2/index.js'
 
-async function execute(...cmd: string[]) {
-  const { success, code, signal } = await Deno.run({
-    cmd,
-    stdin: 'inherit',
-    stdout: 'inherit',
-    stderr: 'inherit',
-  }).status()
+interface PackageIndexItem {
+  readonly crate: PackageIndexItem.Crate
+  readonly versions: readonly PackageIndexItem.Version[]
+}
 
-  if (!success) {
-    console.info(`::error::Status Code: ${code}; Signal: ${signal}`)
-    Deno.exit(code)
+namespace PackageIndexItem {
+  export interface Crate {
+    readonly max_version: string
+    readonly description: string | null
+    readonly homepage: string | null
+    readonly repository: string | null
+    readonly documentation: string | null
+  }
+
+  export interface Version {
+    readonly num: string
+    readonly license: string
   }
 }
 
-interface PackageIndexItem {
-  readonly vers: string
-}
-
 class Package {
-  #indexTextContent?: string
+  #content?: PackageIndexItem
 
   constructor(
     public readonly crate: string,
     public readonly binaries: readonly string[],
   ) {}
 
-  public indexPath(): readonly string[] {
-    const { crate } = this
-    switch (crate.length) {
-      case 0:
-        throw new Error('Crate name cannot be empty')
-      case 1:
-        return ['1', crate]
-      case 2:
-        return ['2', crate]
-      case 3:
-        return ['3', crate[0], crate]
-      default:
-        return [crate.slice(0, 2), crate.slice(2, 4), crate]
-    }
-  }
-
   public indexUrl(): string {
-    const path = this.indexPath().join('/')
-    return `https://github.com/rust-lang/crates.io-index/raw/master/${path}`
+    return `https://crates.io/api/v1/crates/${this.crate}`
   }
 
-  public async loadIndexText(): Promise<string> {
-    if (typeof this.#indexTextContent === 'string') {
-      return this.#indexTextContent
+  public async loadIndexJson(): Promise<PackageIndexItem> {
+    if (this.#content) {
+      return this.#content
     }
 
     const response = await fetch(this.indexUrl())
@@ -63,34 +47,13 @@ class Package {
       )
     }
 
-    const content = await response.text()
-    this.#indexTextContent = content
+    const content = JSON.parse(await response.text())
+    this.#content = content
     return content
   }
 
-  public async *loadIndexJson(): AsyncGenerator<PackageIndexItem> {
-    const text = await this.loadIndexText()
-    for (const line of text.split('\n')) {
-      if (!line.trim()) continue
-      yield JSON.parse(line)
-    }
-  }
-
-  public async *loadVersions(): AsyncGenerator<semver.SemVer> {
-    for await (const item of this.loadIndexJson()) {
-      yield semver.parse(item.vers)!
-    }
-  }
-
   public async latestVersion(): Promise<string> {
-    let latest: string = '0.0.0'
-    for await (const current of this.loadIndexJson()) {
-      const cmp = semver.compare(latest, current.vers)
-      if (cmp === -1 || cmp === 0) {
-        latest = current.vers
-      }
-    }
-    return latest
+    return (await this.loadIndexJson()).crate.max_version
   }
 }
 
@@ -125,7 +88,7 @@ const packages = await pipe(
   iter => [...iter],
   pkgs =>
     pkgs.map(async pkg => {
-      await pkg.loadIndexText()
+      await pkg.loadIndexJson()
       return pkg
     }),
   x => Promise.all(x),
