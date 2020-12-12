@@ -9,6 +9,7 @@ cargo-member: ~
 cargo-script:
   - cargo-script
   - run-cargo-script
+cargo-todox: ~
 cargo-x:
   - cargo-x
   - x
