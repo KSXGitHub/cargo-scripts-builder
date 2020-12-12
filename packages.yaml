@@ -1,4 +1,5 @@
 ---
+cargo-count: ~
 cargo-expand: ~
 cargo-insta: ~
 cargo-make:
