@@ -5,6 +5,7 @@ cargo-insta: ~
 cargo-make:
   - cargo-make
   - makers
+cargo-member: ~
 cargo-script:
   - cargo-script
   - run-cargo-script
