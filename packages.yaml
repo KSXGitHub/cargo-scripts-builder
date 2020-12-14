@@ -15,6 +15,7 @@ cargo-x:
   - x
 eva: ~
 mdcat: ~
+rew: ~
 wasm-bindgen-cli:
   - wasm-bindgen
   - wasm-bindgen-test-runner
