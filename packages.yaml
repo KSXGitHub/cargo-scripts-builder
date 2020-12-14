@@ -1,6 +1,7 @@
 ---
 cargo-count: ~
 cargo-expand: ~
+cargo-inspect: ~
 cargo-insta: ~
 cargo-make:
   - cargo-make
