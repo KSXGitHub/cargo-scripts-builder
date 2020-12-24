@@ -1,5 +1,6 @@
 ---
 cargo-count: ~
+cargo-equip: ~
 cargo-expand: ~
 cargo-inspect: ~
 cargo-insta: ~
