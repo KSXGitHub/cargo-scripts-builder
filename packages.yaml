@@ -17,7 +17,6 @@ cargo-x:
   - cargo-x
   - x
 eva: ~
-libreddit: ~
 mdcat: ~
 rew: ~
 wasm-bindgen-cli:
