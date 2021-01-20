@@ -17,6 +17,7 @@ cargo-x:
   - cargo-x
   - x
 eva: ~
+jql: ~
 mdcat: ~
 rew: ~
 wasm-bindgen-cli:
