@@ -20,6 +20,7 @@ eva: ~
 jql: ~
 mdcat: ~
 rew: ~
+trunk: ~
 wasm-bindgen-cli:
   - wasm-bindgen
   - wasm-bindgen-test-runner
