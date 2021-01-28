@@ -19,6 +19,7 @@ cargo-x:
 eva: ~
 jql: ~
 mdcat: ~
+procs: ~
 rew: ~
 trunk: ~
 wasm-bindgen-cli:
