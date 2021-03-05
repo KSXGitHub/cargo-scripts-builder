@@ -18,6 +18,8 @@ cargo-x:
   - x
 eva: ~
 jql: ~
+kiro-editor:
+  - kiro
 mdcat: ~
 rew: ~
 trunk: ~
