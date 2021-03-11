@@ -23,6 +23,7 @@ kiro-editor:
 lazycli: ~
 mdcat: ~
 rew: ~
+ter: ~
 trunk: ~
 wasm-bindgen-cli:
   - wasm-bindgen
