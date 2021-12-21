@@ -23,6 +23,9 @@ kiro-editor:
 lazycli: ~
 mdcat: ~
 rew: ~
+sqlx-cli:
+  - sqlx
+  - cargo-sqlx
 ter: ~
 trunk: ~
 wasm-bindgen-cli:
