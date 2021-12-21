@@ -23,7 +23,6 @@ kiro-editor:
 lazycli: ~
 mdcat: ~
 rew: ~
-sea-orm-cli: ~
 sqlx-cli:
   - sqlx
   - cargo-sqlx
