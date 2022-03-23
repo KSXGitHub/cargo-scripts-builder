@@ -8,6 +8,7 @@ cargo-make:
   - cargo-make
   - makers
 cargo-member: ~
+cargo-nextest: ~
 cargo-node: ~
 cargo-script:
   - cargo-script
