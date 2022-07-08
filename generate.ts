@@ -11,7 +11,7 @@ interface Payload {
 
 namespace Payload {
   export interface Crate {
-    readonly max_version: string
+    readonly max_stable_version: string
     readonly description: string | null
     readonly homepage: string | null
     readonly repository: string | null
@@ -54,7 +54,7 @@ class Package {
   }
 
   public async latestVersion(): Promise<string> {
-    return (await this.load()).crate.max_version
+    return (await this.load()).crate.max_stable_version
   }
 
   public async license(): Promise<string> {
