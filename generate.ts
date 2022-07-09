@@ -5,23 +5,21 @@ import { pipe } from 'https://deno.land/x/compose@1.3.2/index.js'
 import shellEscape from 'https://deno.land/x/shell_escape@1.0.0/single-argument.ts'
 
 interface Payload {
-  readonly crate: Payload.Crate
-  readonly versions: readonly Payload.Version[]
+  readonly crate: Crate
+  readonly versions: readonly Version[]
 }
 
-namespace Payload {
-  export interface Crate {
-    readonly max_stable_version: string
-    readonly description: string | null
-    readonly homepage: string | null
-    readonly repository: string | null
-    readonly documentation: string | null
-  }
+export interface Crate {
+  readonly max_stable_version: string
+  readonly description: string | null
+  readonly homepage: string | null
+  readonly repository: string | null
+  readonly documentation: string | null
+}
 
-  export interface Version {
-    readonly num: string
-    readonly license: string
-  }
+export interface Version {
+  readonly num: string
+  readonly license: string
 }
 
 class Package {
