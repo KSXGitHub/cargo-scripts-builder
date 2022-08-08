@@ -17,6 +17,8 @@ cargo-x:
   - cargo-x
   - x
 eva: ~
+id3-cli:
+  - id3
 jql: ~
 kiro-editor:
   - kiro
