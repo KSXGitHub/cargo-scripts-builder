@@ -55,12 +55,55 @@ class Package {
     return (await this.load()).crate.max_stable_version
   }
 
-  public async license(): Promise<string> {
+  public async license(): Promise<string[]> {
     const latestVersion = await this.latestVersion()
-    return (await this.load())
-      .versions
-      .find(x => x.num === latestVersion)!
-      .license
+    const payload = await this.load()
+    const licenseString = payload.versions.find(x => x.num === latestVersion)?.license
+
+    if (!licenseString) return []
+
+    function detectSingleLicense(license: string) {
+      switch (license) {
+        case 'MIT':
+        case 'Apache':
+        case 'Apache-1.0':
+        case 'Apache-2.0':
+        case 'ISC':
+        case 'MPL':
+        case 'MPL-1.0':
+        case 'MPL-1.1':
+        case 'MPL-2.0':
+        case 'GPL':
+        case 'GPL-2.0':
+        case 'GPL-3.0':
+          return license
+        default:
+          return false
+      }
+    }
+
+    function detectMultipleLicense(licenses: readonly string[]) {
+      const detected = []
+      for (const candidate of licenses) {
+        const singleLicense = detectSingleLicense(candidate)
+        if (!singleLicense) return false
+        detected.push(singleLicense)
+      }
+      return detected
+    }
+
+    // 'MIT OR Apache-2.0' → ('MIT' 'Apache-2.0')
+    const licenseChoices = detectMultipleLicense(licenseString.split(/\sor\s/i))
+    if (licenseChoices) return licenseChoices
+
+    // 'MIT/Apache-2.0' → ('MIT' 'Apache-2.0')
+    const dualLicense = detectMultipleLicense(licenseString.split('/'))
+    if (dualLicense) return dualLicense
+
+    // 'MIT AND Apache-2.0' → ('custom:MIT AND Apache-2.0')
+    // 'proprietary' → ('custom:proprietary')
+    const singleLicense = detectSingleLicense(licenseString)
+    return singleLicense ? [singleLicense] : [`custom:${licenseString}`]
   }
 
   public async latestInfo() {
@@ -123,7 +166,7 @@ async function createBuildDirectory(pkg: Package) {
     .replaceAll('BINARIES', pkg.binaries.map(shellEscape).join(' '))
     .replaceAll('DESCRIPTION', shellEscape(description || ''))
     .replaceAll('URL', shellEscape(url))
-    .replaceAll('LICENSE', shellEscape(license))
+    .replaceAll('LICENSE', license.map(shellEscape).join(' '))
   const buildDirectory = path.join(__dirname, 'build', pkg.crate)
   if (!fs.existsSync(buildDirectory)) {
     Deno.mkdirSync(buildDirectory)
