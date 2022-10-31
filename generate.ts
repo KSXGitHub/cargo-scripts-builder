@@ -93,7 +93,7 @@ class Package {
     }
 
     // 'MIT OR Apache-2.0' → ('MIT' 'Apache-2.0')
-    const licenseChoices = detectMultipleLicense(licenseString.split(/\sor\s/i))
+    const licenseChoices = detectMultipleLicense(licenseString.split(/\s+or\s+/i))
     if (licenseChoices) return licenseChoices
 
     // 'MIT/Apache-2.0' → ('MIT' 'Apache-2.0')
