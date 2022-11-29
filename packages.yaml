@@ -4,9 +4,6 @@ cargo-equip: ~
 cargo-expand: ~
 cargo-inspect: ~
 cargo-insta: ~
-cargo-make:
-  - cargo-make
-  - makers
 cargo-member: ~
 cargo-node: ~
 cargo-script:
@@ -16,18 +13,8 @@ cargo-todox: ~
 cargo-x:
   - cargo-x
   - x
-eva: ~
 id3-cli:
   - id3
-jql: ~
-kiro-editor:
-  - kiro
 lazycli: ~
-mdcat: ~
 rew: ~
 ter: ~
-trunk: ~
-wasm-bindgen-cli:
-  - wasm-bindgen
-  - wasm-bindgen-test-runner
-  - wasm2es6js
