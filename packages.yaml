@@ -13,6 +13,7 @@ cargo-todox: ~
 cargo-x:
   - cargo-x
   - x
+csvlens: ~
 id3-cli:
   - id3
 lazycli: ~
